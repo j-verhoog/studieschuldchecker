@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DUO SF35 studieschuld calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">DUO SF35 simulatie</p>
+        <h1>Studieschuld terugbetalen onder SF35</h1>
+        <p class="intro">Bereken een realistische schatting van je maandlast op basis van schuld, salaris, partnerinkomen, rente en jaarlijkse groei. Dit is geen officiële DUO-berekening, maar volgt de openbare SF35-regels zo dicht mogelijk.</p>
+      </div>
+      <div class="summary-card">
+        <span>Geschatte eerste maand</span>
+        <strong id="heroPayment">€ 0</strong>
+        <small id="heroLabel">op basis van draagkracht en annuïteit</small>
+      </div>
+    </section>
+
+    <section class="grid">
+      <form class="panel controls" id="form">
+        <h2>Instellingen</h2>
+
+        <label>
+          Studieschuld bij start aflosfase
+          <input id="debt" type="number" min="0" step="100" value="35000">
+        </label>
+
+        <label>
+          Jouw belastbaar jaarinkomen
+          <input id="income" type="number" min="0" step="500" value="42000">
+        </label>
+
+        <label>
+          Partnerinkomen per jaar
+          <input id="partnerIncome" type="number" min="0" step="500" value="0">
+        </label>
+
+        <label>
+          Leefsituatie
+          <select id="household">
+            <option value="single">Alleenstaand zonder kinderen</option>
+            <option value="partner">Partner of alleenstaande ouder</option>
+          </select>
+        </label>
+
+        <div class="two">
+          <label>
+            DUO rente per jaar (%)
+            <input id="interest" type="number" min="0" max="20" step="0.01" value="2.33">
+          </label>
+          <label>
+            Rentevaste periode (jaren)
+            <input id="fixedYears" type="number" min="1" max="35" step="1" value="5">
+          </label>
+        </div>
+
+        <div class="two">
+          <label>
+            Salarisgroei per jaar (%)
+            <input id="incomeGrowth" type="number" min="-20" max="30" step="0.1" value="3.0">
+          </label>
+          <label>
+            Vrijstelling/inflatie per jaar (%)
+            <input id="exemptionGrowth" type="number" min="-10" max="20" step="0.1" value="2.5">
+          </label>
+        </div>
+
+        <div class="two">
+          <label>
+            Latere rente na vaste periode (%)
+            <input id="futureInterest" type="number" min="0" max="20" step="0.01" value="2.33">
+          </label>
+          <label>
+            Extra aflossen per maand
+            <input id="extraPayment" type="number" min="0" step="10" value="0">
+          </label>
+        </div>
+
+        <div class="two">
+          <label>
+            Aflosvrije maanden
+            <input id="pauseMonths" type="number" min="0" max="60" step="1" value="0">
+          </label>
+          <label>
+            Simulatiejaren
+            <input id="years" type="number" min="1" max="40" step="1" value="35">
+          </label>
+        </div>
+
+        <label class="check">
+          <input id="incomeLag" type="checkbox" checked>
+          Gebruik peiljaar-effect: DUO rekent met inkomen van 2 jaar geleden
+        </label>
+
+        <label class="check">
+          <input id="roundDown" type="checkbox" checked>
+          Rond maandbedrag naar beneden af op hele euro’s
+        </label>
+
+        <button type="button" id="reset">Reset voorbeeld</button>
+      </form>
+
+      <section class="panel results">
+        <h2>Resultaat</h2>
+        <div class="cards">
+          <article><span>Eerste verplichte maandbedrag</span><strong id="firstPayment">€ 0</strong></article>
+          <article><span>Gemiddelde maandbetaling</span><strong id="avgPayment">€ 0</strong></article>
+          <article><span>Totaal betaald</span><strong id="totalPaid">€ 0</strong></article>
+          <article><span>Resterende kwijtschelding</span><strong id="forgiven">€ 0</strong></article>
+          <article><span>Maand waarin schuld op €0 komt</span><strong id="paidOffMonth">Niet binnen periode</strong></article>
+          <article><span>Hoogste maandbedrag</span><strong id="maxPayment">€ 0</strong></article>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="chart" width="900" height="360"></canvas>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Jaar</th>
+                <th>Inkomen voor DUO</th>
+                <th>Vrijstelling</th>
+                <th>Draagkracht p/m</th>
+                <th>Betaald</th>
+                <th>Schuld einde jaar</th>
+              </tr>
+            </thead>
+            <tbody id="yearRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel rules">
+      <h2>Regels die in deze calculator zitten</h2>
+      <ul>
+        <li>SF35 heeft een maximale aflosfase van 35 jaar.</li>
+        <li>De jaarlijkse draagkracht is 4% van het gezamenlijke inkomen boven de draagkrachtvrije voet.</li>
+        <li>Voor 2026 is de SF35-vrijstelling €26.819,42 voor alleenstaand zonder kinderen en €38.351,77 met partner of als alleenstaande ouder.</li>
+        <li>Partnerinkomen telt bij SF35 mee.</li>
+        <li>Als de berekende draagkracht lager is dan €5 per maand, wordt het verplichte bedrag op €0 gezet.</li>
+        <li>Rente wordt maandelijks samengesteld. De standaard 2026-SF35-rente is 2,33%.</li>
+        <li>Een aflosvrije periode kan maximaal 60 maanden zijn; rente loopt door en de termijn wordt verlengd.</li>
+        <li>Na afloop van de aflosperiode wordt een eventuele restschuld als kwijtschelding getoond.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

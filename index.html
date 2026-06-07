@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DUO SF35 studieschuld calculator</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,12 +13,12 @@
       <div>
         <p class="eyebrow">DUO SF35 simulatie</p>
         <h1>Studieschuld terugbetalen onder SF35</h1>
-        <p class="intro">Bereken een realistische schatting van je maandlast op basis van schuld, salaris, partnerinkomen, rente en jaarlijkse groei. Dit is geen officiële DUO-berekening, maar volgt de openbare SF35-regels zo dicht mogelijk.</p>
+        <p class="intro">Bereken een realistische schatting van je maandlast op basis van schuld, inkomen, partnerinkomen, rente, peiljaarvertraging en één aaneengesloten aflosvrije periode. Dit is geen officiële DUO-berekening, maar volgt de openbare SF35-regels zo dicht mogelijk.</p>
       </div>
       <div class="summary-card">
-        <span>Geschatte eerste maand</span>
+        <span>Eerste verplichte maand</span>
         <strong id="heroPayment">€ 0</strong>
-        <small id="heroLabel">op basis van draagkracht en annuïteit</small>
+        <small id="heroLabel">op basis van jaarlijks vastgezette draagkracht</small>
       </div>
     </section>
 
@@ -25,81 +26,239 @@
       <form class="panel controls" id="form">
         <h2>Instellingen</h2>
 
-        <label>
-          Studieschuld bij start aflosfase
-          <input id="debt" type="number" min="0" step="100" value="35000">
-        </label>
+        <div class="field-label">
+          <label for="debt">Studieschuld bij start aflosfase</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Studieschuld bij start aflosfase" aria-describedby="tip-debt">i</button>
+            <span class="tooltip-content" id="tip-debt" role="tooltip">
+              Je openstaande schuld op de eerste maand van de verplichte aflosfase. Volgens DUO start de aflosfase na de 2-jarige aanloopfase; rente loopt al vanaf de aanloopfase. Bron: DUO “Zo werkt terugbetalen”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/zo-werkt-terugbetalen.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+        <input id="debt" type="number" min="0" step="100" value="35000">
 
-        <label>
-          Jouw belastbaar jaarinkomen
-          <input id="income" type="number" min="0" step="500" value="42000">
-        </label>
+        <div class="field-label">
+          <label for="income">Verwacht belastbaar jaarinkomen in jaar 1 van terugbetaling</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Verwacht belastbaar jaarinkomen in jaar 1 van terugbetaling" aria-describedby="tip-income">i</button>
+            <span class="tooltip-content" id="tip-income" role="tooltip">
+              Gebruik hier je verwachte belastbaar inkomen in het eerste jaar waarin je verplicht moet aflossen. DUO gebruikt voor draagkracht meestal je inkomen van 2 jaar geleden; de peiljaar-toggle simuleert die vertraging. Bron: DUO “Berekening maandbedrag”, onderdeel Peiljaar.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+        <input id="income" type="number" min="0" step="500" value="42000">
 
-        <label>
-          Partnerinkomen per jaar
-          <input id="partnerIncome" type="number" min="0" step="500" value="0">
-        </label>
+        <div class="field-label">
+          <label for="partnerIncome">Partnerinkomen per jaar in jaar 1</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Partnerinkomen per jaar in jaar 1" aria-describedby="tip-partnerIncome">i</button>
+            <span class="tooltip-content" id="tip-partnerIncome" role="tooltip">
+              Bij SF35 kijkt DUO meestal ook naar het inkomen van je eventuele partner. Zet dit op 0 als je geen partner hebt of partnerinkomen buiten beschouwing wilt laten. Bron: DUO “Berekening maandbedrag”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+        <input id="partnerIncome" type="number" min="0" step="500" value="0">
 
-        <label>
-          Leefsituatie
-          <select id="household">
-            <option value="single">Alleenstaand zonder kinderen</option>
-            <option value="partner">Partner of alleenstaande ouder</option>
-          </select>
-        </label>
+        <div class="field-label">
+          <label for="household">Leefsituatie</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Leefsituatie" aria-describedby="tip-household">i</button>
+            <span class="tooltip-content" id="tip-household" role="tooltip">
+              De vrijstelling is hoger als je een partner hebt of alleenstaande ouder bent. Voor 2026 noemt DUO €26.819,42 voor alleenstaand zonder kinderen en €38.351,77 met partner of als alleenstaande ouder. Bron: DUO “Berekening maandbedrag”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+        <select id="household">
+          <option value="single">Alleenstaand zonder kinderen</option>
+          <option value="partner">Partner of alleenstaande ouder</option>
+        </select>
+
+        <div class="field-label">
+          <label for="graduationDate">Afstudeerdatum / einde studiefinanciering</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Afstudeerdatum / einde studiefinanciering" aria-describedby="tip-graduationDate">i</button>
+            <span class="tooltip-content" id="tip-graduationDate" role="tooltip">
+              DUO laat de aanloopfase starten op 1 januari na het stoppen van je studiefinanciering. Die aanloopfase duurt 2 jaar; daarna start de verplichte aflosfase op 1 januari. Bron: DUO “Zo werkt terugbetalen”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/zo-werkt-terugbetalen.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+        <input id="graduationDate" type="date" value="2026-06-10">
 
         <div class="two">
-          <label>
-            DUO rente per jaar (%)
+          <div>
+            <div class="field-label">
+          <label for="interest">DUO rente per jaar (%)</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: DUO rente per jaar (%)" aria-describedby="tip-interest">i</button>
+            <span class="tooltip-content" id="tip-interest" role="tooltip">
+              Het rentepercentage wordt vanaf de start van de aanloopfase steeds voor 5 jaar vastgezet. Vul hier het rentepercentage in dat voor jou geldt in Mijn DUO, of gebruik een scenario. Bron: DUO “Zo werkt terugbetalen” en DUO rentepagina.
+              <a href="https://duo.nl/particulier/rente/rente-voor-studenten.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
             <input id="interest" type="number" min="0" max="20" step="0.01" value="2.33">
-          </label>
-          <label>
-            Rentevaste periode (jaren)
+          </div>
+          <div>
+            <div class="field-label">
+          <label for="fixedYears">Rentevaste periode (jaren)</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Rentevaste periode (jaren)" aria-describedby="tip-fixedYears">i</button>
+            <span class="tooltip-content" id="tip-fixedYears" role="tooltip">
+              DUO zet het rentepercentage vanaf de start van de aanloopfase telkens voor 5 jaar vast. Deze optie laat je voor scenario’s ook een andere lengte testen, maar 5 jaar is de DUO-basis. Bron: DUO “Zo werkt terugbetalen”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/zo-werkt-terugbetalen.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
             <input id="fixedYears" type="number" min="1" max="35" step="1" value="5">
-          </label>
+          </div>
         </div>
 
         <div class="two">
-          <label>
-            Salarisgroei per jaar (%)
+          <div>
+            <div class="field-label">
+          <label for="incomeGrowth">Salarisgroei per jaar (%)</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Salarisgroei per jaar (%)" aria-describedby="tip-incomeGrowth">i</button>
+            <span class="tooltip-content" id="tip-incomeGrowth" role="tooltip">
+              Jouw eigen scenario voor toekomstige inkomensgroei. Dit staat niet als vast percentage in DUO-regels; DUO rekent met werkelijk geregistreerd inkomen en meestal het peiljaar van 2 jaar geleden. Bron: DUO “Berekening maandbedrag”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
             <input id="incomeGrowth" type="number" min="-20" max="30" step="0.1" value="3.0">
-          </label>
-          <label>
-            Vrijstelling/inflatie per jaar (%)
+          </div>
+          <div>
+            <div class="field-label">
+          <label for="exemptionGrowth">Vrijstelling/inflatie per jaar (%)</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Vrijstelling/inflatie per jaar (%)" aria-describedby="tip-exemptionGrowth">i</button>
+            <span class="tooltip-content" id="tip-exemptionGrowth" role="tooltip">
+              Scenario-aanname voor groei van de draagkrachtvrije voet. DUO zegt dat de bedragen afhankelijk zijn van het minimumloon; deze calculator laat jou een eigen groeipercentage kiezen. Bron: DUO “Berekening maandbedrag”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
             <input id="exemptionGrowth" type="number" min="-10" max="20" step="0.1" value="2.5">
-          </label>
+          </div>
         </div>
 
         <div class="two">
-          <label>
-            Latere rente na vaste periode (%)
+          <div>
+            <div class="field-label">
+          <label for="futureInterest">Latere rente na vaste periode (%)</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Latere rente na vaste periode (%)" aria-describedby="tip-futureInterest">i</button>
+            <span class="tooltip-content" id="tip-futureInterest" role="tooltip">
+              Scenario voor de rente nadat de eerste rentevaste periode voorbij is. DUO stelt rente per rentevaste periode vast; het toekomstige percentage is onzeker. Bron: DUO rentepagina.
+              <a href="https://duo.nl/particulier/rente/rente-voor-studenten.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
             <input id="futureInterest" type="number" min="0" max="20" step="0.01" value="2.33">
-          </label>
-          <label>
-            Extra aflossen per maand
-            <input id="extraPayment" type="number" min="0" step="10" value="0">
-          </label>
+          </div>
+          <div>
+            <div class="field-label">
+          <label for="extraPayment">Extra aflossen per actieve maand</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Extra aflossen per actieve maand" aria-describedby="tip-extraPayment">i</button>
+            <span class="tooltip-content" id="tip-extraPayment" role="tooltip">
+              Je mag altijd meer aflossen dan het vastgestelde maandbedrag. Deze extra betaling telt alleen in actieve aflosmaanden, niet tijdens aflosvrije maanden. Bron: DUO “Berekening maandbedrag”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
         </div>
+            <input id="extraPayment" type="number" min="0" step="10" value="0">
+          </div>
+        </div>
+
+        <div class="field-label">
+          <label for="pauseStrategy">Aflosvrije periode plannen als één blok</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Aflosvrije periode plannen als één blok" aria-describedby="tip-pauseStrategy">i</button>
+            <span class="tooltip-content" id="tip-pauseStrategy" role="tooltip">
+              Voor de eenvoud plant deze site alle gekozen aflosvrije maanden als één aaneengesloten blok. DUO staat maximaal 60 maanden toe; die kunnen in werkelijkheid in één keer of verspreid worden gebruikt. Bron: DUO “Aflosvrije periode”.
+              <a href="https://duo.nl/particulier/minder-of-niets-aflossen/aflosvrije-periode.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+        <select id="pauseStrategy">
+          <option value="none">Niet gebruiken</option>
+          <option value="immediate">Direct bij start verplichte aflosfase</option>
+          <option value="middle">In het midden van de oorspronkelijke 35 jaar</option>
+          <option value="final">Aan het einde van de oorspronkelijke 35 jaar</option>
+          <option value="custom">Zelf startjaar kiezen binnen de oorspronkelijke 35 jaar</option>
+        </select>
 
         <div class="two">
-          <label>
-            Aflosvrije maanden
-            <input id="pauseMonths" type="number" min="0" max="60" step="1" value="0">
-          </label>
-          <label>
-            Simulatiejaren
-            <input id="years" type="number" min="1" max="40" step="1" value="35">
-          </label>
+          <div>
+            <div class="field-label">
+          <label for="pauseMonths">Aflosvrije maanden gebruiken (max. 60)</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Aflosvrije maanden gebruiken (max. 60)" aria-describedby="tip-pauseMonths">i</button>
+            <span class="tooltip-content" id="tip-pauseMonths" role="tooltip">
+              Je kunt terugbetalen maximaal 60 maanden stopzetten. Tijdens die periode hoef je verplicht niets te betalen, rente loopt door en de maximale terugbetalingsperiode wordt verlengd met het aantal gebruikte maanden. Bron: DUO “Aflosvrije periode”.
+              <a href="https://duo.nl/particulier/minder-of-niets-aflossen/aflosvrije-periode.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+            <input id="pauseMonths" type="number" min="0" max="60" step="1" value="60">
+          </div>
+          <div>
+            <div class="field-label">
+          <label for="customPauseStartYear">Startjaar bij zelf kiezen</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Startjaar bij zelf kiezen" aria-describedby="tip-customPauseStartYear">i</button>
+            <span class="tooltip-content" id="tip-customPauseStartYear" role="tooltip">
+              Alleen relevant als je “Zelf startjaar kiezen” selecteert. Dit kiest in welk jaar van de oorspronkelijke 35 jaar het ene aflosvrije blok start. De echte DUO-regel is maximaal 60 maanden; deze timing is een scenario-keuze van de calculator. Bron: DUO “Aflosvrije periode”.
+              <a href="https://duo.nl/particulier/minder-of-niets-aflossen/aflosvrije-periode.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+            <input id="customPauseStartYear" type="number" min="1" max="35" step="1" value="10">
+          </div>
         </div>
 
-        <label class="check">
+        <div class="field-label">
+          <label for="minPaymentThreshold">Drempel klein maandbedrag</label>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Drempel klein maandbedrag" aria-describedby="tip-minPaymentThreshold">i</button>
+            <span class="tooltip-content" id="tip-minPaymentThreshold" role="tooltip">
+              Scenario-instelling van deze calculator: als de berekende draagkracht lager is dan deze drempel, tonen we €0 verplicht maandbedrag. Dit is een vereenvoudiging om minieme bedragen praktisch te behandelen; controleer altijd Mijn DUO voor het officiële bedrag. Bron voor draagkrachtformule: DUO “Berekening maandbedrag”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
+        </div>
+        <input id="minPaymentThreshold" type="number" min="0" max="50" step="1" value="5">
+
+        <p class="hint">De simulatie loopt altijd over 35 jaar plus het aantal gekozen aflosvrije maanden. Tijdens de aflosvrije periode betaal je verplicht €0, loopt de rente door, en wordt de resterende looptijd stilgezet.</p>
+
+        <label class="check" for="incomeLag">
           <input id="incomeLag" type="checkbox" checked>
-          Gebruik peiljaar-effect: DUO rekent met inkomen van 2 jaar geleden
+          <span>Gebruik peiljaar-effect: inkomensgroei werkt pas na 2 jaar door in je DUO-maandbedrag</span>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Gebruik peiljaar-effect" aria-describedby="tip-incomeLag">i</button>
+            <span class="tooltip-content" id="tip-incomeLag" role="tooltip">
+              DUO kijkt voor draagkracht meestal naar je inkomen van 2 jaar geleden. Met deze toggle werkt inkomensgroei daarom pas na 2 jaar door in het DUO-maandbedrag. Bron: DUO “Berekening maandbedrag”, onderdeel Peiljaar.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
         </label>
 
-        <label class="check">
+        <label class="check" for="roundDown">
           <input id="roundDown" type="checkbox" checked>
-          Rond maandbedrag naar beneden af op hele euro’s
+          <span>Rond maandbedrag naar beneden af op hele euro’s</span>
+          <span class="tooltip">
+            <button class="info-button" type="button" aria-label="Uitleg: Rond maandbedrag naar beneden af" aria-describedby="tip-roundDown">i</button>
+            <span class="tooltip-content" id="tip-roundDown" role="tooltip">
+              Vereenvoudiging voor leesbaarheid: bedragen worden naar hele euro’s afgerond. DUO kan andere exacte afronding of centbedragen hanteren; gebruik Mijn DUO voor het officiële bedrag. Bron voor officiële berekening: DUO “Berekening maandbedrag”.
+              <a href="https://duo.nl/particulier/studieschuld-terugbetalen/berekening-maandbedrag.jsp" target="_blank" rel="noopener noreferrer">Lees na bij DUO</a>
+            </span>
+          </span>
         </label>
 
         <button type="button" id="reset">Reset voorbeeld</button>
@@ -108,16 +267,20 @@
       <section class="panel results">
         <h2>Resultaat</h2>
         <div class="cards">
+          <article><span>Start verplichte aflosfase</span><strong id="repaymentStart">-</strong></article>
           <article><span>Eerste verplichte maandbedrag</span><strong id="firstPayment">€ 0</strong></article>
           <article><span>Gemiddelde maandbetaling</span><strong id="avgPayment">€ 0</strong></article>
           <article><span>Totaal betaald</span><strong id="totalPaid">€ 0</strong></article>
           <article><span>Resterende kwijtschelding</span><strong id="forgiven">€ 0</strong></article>
           <article><span>Maand waarin schuld op €0 komt</span><strong id="paidOffMonth">Niet binnen periode</strong></article>
           <article><span>Hoogste maandbedrag</span><strong id="maxPayment">€ 0</strong></article>
+          <article><span>Aflosvrije periode</span><strong id="pauseSummary">Geen</strong></article>
+          <article><span>Einddatum simulatie</span><strong id="simulationEnd">-</strong></article>
         </div>
 
-        <div class="chart-wrap">
-          <canvas id="chart" width="900" height="360"></canvas>
+        <div class="chart-wrap" id="chartWrap">
+          <canvas id="chart" role="img" aria-label="Grafiek met de verwachte studieschuld en maandbetaling over de looptijd."></canvas>
+          <p id="chartSummary" class="sr-only"></p>
         </div>
 
         <div class="table-wrap">
@@ -125,9 +288,12 @@
             <thead>
               <tr>
                 <th>Jaar</th>
+                <th>Kalenderjaar</th>
+                <th>Fase</th>
                 <th>Inkomen voor DUO</th>
                 <th>Vrijstelling</th>
                 <th>Draagkracht p/m</th>
+                <th>Vast bedrag p/m</th>
                 <th>Betaald</th>
                 <th>Schuld einde jaar</th>
               </tr>
@@ -141,15 +307,18 @@
     <section class="panel rules">
       <h2>Regels die in deze calculator zitten</h2>
       <ul>
-        <li>SF35 heeft een maximale aflosfase van 35 jaar.</li>
+        <li>SF35 heeft een maximale aflosfase van 35 jaar. De verplichte aflosfase begint na een aanloopfase van 2 jaar, op 1 januari.</li>
         <li>De jaarlijkse draagkracht is 4% van het gezamenlijke inkomen boven de draagkrachtvrije voet.</li>
         <li>Voor 2026 is de SF35-vrijstelling €26.819,42 voor alleenstaand zonder kinderen en €38.351,77 met partner of als alleenstaande ouder.</li>
-        <li>Partnerinkomen telt bij SF35 mee.</li>
-        <li>Als de berekende draagkracht lager is dan €5 per maand, wordt het verplichte bedrag op €0 gezet.</li>
+        <li>Partnerinkomen telt bij SF35 mee. DUO gebruikt meestal het inkomen van 2 jaar geleden als peiljaar.</li>
+        <li>Deze calculator zet het DUO-maandbedrag jaarlijks vast voor 12 maanden. Daardoor verandert het bedrag niet iedere maand.</li>
+        <li>Als de berekende draagkracht lager is dan de ingestelde drempel, wordt het verplichte bedrag op €0 gezet.</li>
         <li>Rente wordt maandelijks samengesteld. De standaard 2026-SF35-rente is 2,33%.</li>
-        <li>Een aflosvrije periode kan maximaal 60 maanden zijn; rente loopt door en de termijn wordt verlengd.</li>
+        <li>Een aflosvrije periode kan maximaal 60 maanden zijn. In deze calculator zet je die maanden voor de eenvoud in één aaneengesloten blok in.</li>
+        <li>Tijdens die maanden betaal je verplicht niets, maar de rente loopt door. De resterende looptijd van de aflosfase wordt stilgezet, dus de maximale terugbetalingsperiode wordt verlengd met het aantal gebruikte maanden.</li>
         <li>Na afloop van de aflosperiode wordt een eventuele restschuld als kwijtschelding getoond.</li>
       </ul>
+      <p class="source-note">De informatie-iconen bij de instellingen linken naar de relevante DUO-pagina’s. Open altijd Mijn DUO voor je persoonlijke officiële maandbedrag.</p>
     </section>
   </main>
 

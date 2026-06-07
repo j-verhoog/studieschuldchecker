@@ -91,7 +91,7 @@ h2 {
 
 .grid {
   display: grid;
-  grid-template-columns: 390px 1fr;
+  grid-template-columns: 410px 1fr;
   gap: 24px;
   align-items: start;
 }
@@ -104,11 +104,10 @@ h2 {
 }
 
 label {
-  display: grid;
-  gap: 7px;
+  display: block;
   font-weight: 700;
   font-size: 0.92rem;
-  margin-bottom: 14px;
+  margin: 14px 0 7px;
 }
 
 input, select, button {
@@ -133,10 +132,13 @@ input:focus, select:focus {
 }
 
 .check {
+  display: grid;
   grid-template-columns: 20px 1fr;
+  gap: 9px;
   align-items: center;
   font-weight: 600;
   color: var(--muted);
+  margin-top: 16px;
 }
 
 .check input { width: 18px; height: 18px; }
@@ -147,7 +149,7 @@ button {
   color: white;
   font-weight: 800;
   cursor: pointer;
-  margin-top: 4px;
+  margin-top: 16px;
 }
 
 .cards {
@@ -167,7 +169,7 @@ article {
 
 article strong {
   display: block;
-  font-size: 1.45rem;
+  font-size: 1.25rem;
   margin-top: 10px;
   letter-spacing: -0.03em;
 }
@@ -180,7 +182,19 @@ article strong {
   overflow: hidden;
 }
 
-canvas { width: 100%; height: auto; display: block; }
+canvas { display: block; max-width: 100%; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 .table-wrap {
   overflow: auto;
@@ -193,7 +207,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  min-width: 720px;
+  min-width: 980px;
 }
 
 th, td {
@@ -202,7 +216,8 @@ th, td {
   border-bottom: 1px solid var(--line);
 }
 
-th:first-child, td:first-child { text-align: left; }
+th:first-child, td:first-child,
+th:nth-child(3), td:nth-child(3) { text-align: left; }
 
 th {
   font-size: 0.82rem;
@@ -228,4 +243,201 @@ th {
   .two, .cards { grid-template-columns: 1fr; }
   .app { width: min(100% - 20px, 1180px); padding: 18px 0; }
   .panel, .summary-card { border-radius: 20px; padding: 18px; }
+}
+
+.hint {
+  margin: 0 0 0.75rem;
+  color: #637083;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.95rem;
+}
+
+.field-label label {
+  margin: 0;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.info-button {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 800;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  cursor: help;
+}
+
+/* ensure the info-button aligns vertically with surrounding text */
+.info-button { vertical-align: middle; }
+
+/* Chart hover tooltip */
+.chart-tooltip {
+  position: absolute;
+  z-index: 2147483647;
+  background: #172033;
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 12px 36px rgba(23,32,51,0.32);
+  font-size: 0.9rem;
+  pointer-events: none;
+  min-width: 160px;
+}
+.chart-tooltip .title { font-weight: 800; margin-bottom: 6px; }
+.chart-tooltip .line { display: flex; justify-content: space-between; gap: 12px; color: #bcd0ff; }
+.chart-tooltip .muted { color: #9aa6b8; font-weight: 600; }
+
+.info-button:focus-visible {
+  outline: 3px solid rgba(33, 92, 255, 0.25);
+  outline-offset: 2px;
+}
+
+.tooltip-content {
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(4px);
+  width: min(340px, calc(100vw - 40px));
+  background: #172033;
+  color: #fff;
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  box-shadow: 0 16px 42px rgba(23, 32, 51, 0.28);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.tooltip-content::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: #172033;
+}
+
+.tooltip-content a {
+  display: inline-block;
+  color: #bcd0ff;
+  font-weight: 700;
+  margin-top: 0.45rem;
+}
+
+.tooltip:hover .tooltip-content,
+.tooltip:focus-within .tooltip-content {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Portal-based tooltip (appended to <body>) */
+.tooltip-portal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+  pointer-events: auto;
+}
+
+.tooltip-portal .tooltip-portal-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: min(340px, calc(100vw - 40px));
+  background: #172033;
+  color: #fff;
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  box-shadow: 0 16px 42px rgba(23,32,51,0.28);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  pointer-events: auto;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.tooltip-portal .tooltip-portal-content::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: #172033;
+}
+
+.tooltip-portal a {
+  color: #bcd0ff;
+  font-weight: 700;
+}
+
+.tooltip-portal a:focus {
+  outline: 3px solid rgba(188, 208, 255, 0.55);
+  outline-offset: 3px;
+}
+
+/* When JS tooltip portal is active, hide the native inline tooltips to avoid duplicates */
+.js-tooltip-portal .tooltip .tooltip-content {
+  display: none !important;
+}
+
+.check {
+  align-items: flex-start;
+}
+
+.check .tooltip {
+  margin-top: 0.05rem;
+}
+
+.source-note {
+  color: var(--muted);
+  margin: 1rem 0 0;
+  line-height: 1.55;
+}
+
+@media (max-width: 620px) {
+  .tooltip-content {
+    left: auto;
+    right: -0.5rem;
+    transform: translateY(4px);
+  }
+
+  .tooltip:hover .tooltip-content,
+  .tooltip:focus-within .tooltip-content {
+    transform: translateY(0);
+  }
+
+  .tooltip-content::after {
+    left: auto;
+    right: 0.75rem;
+    transform: none;
+  }
+}
+
+.check {
+  grid-template-columns: 20px minmax(0, 1fr) auto;
 }

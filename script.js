@@ -378,6 +378,11 @@ function drawChart(data, annualRows = [], params = state, highlightIndex = null)
   const canvas = el("chart");
   const { ctx, width: w, height: h } = setupCanvas(canvas);
   ctx.clearRect(0, 0, w, h);
+  // ensure a solid white background so the canvas isn't visually empty
+  ctx.save();
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
   ctx.font = "14px system-ui";
   ctx.lineWidth = 2;
 

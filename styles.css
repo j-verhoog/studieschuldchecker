@@ -354,6 +354,14 @@ th {
   transform: translateX(-50%) translateY(0);
 }
 
+/* When the JS tooltip portal is active, hide inline tooltip elements
+   to avoid duplicate visible boxes and layout issues. */
+.js-tooltip-portal .tooltip-content {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Portal-based tooltip (appended to <body>) */
 .tooltip-portal {
   position: absolute;
